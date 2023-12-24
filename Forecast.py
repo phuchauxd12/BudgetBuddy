@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
@@ -10,29 +9,32 @@ import json
 #Retrieve information from DB
 mongoClient = MongoClient('mongodb+srv://phuchauxd12:Abcd0123@cluster0.lf8sh9p.mongodb.net/') # Insert a differnet mongoDB link
 
-# mongoClient = pymongo.MongoClient()   
+# Access to the mongo database and collection
 db = mongoClient['UserBank']
 collection = db['Bank'] 
 
 # enter the collection name
 data = db.get_collection('Bank')
 
-#find data from mongoDB
+#find all data from mongoDB collections
 all_data = collection.find()
 """ This will find the data form the mongoDB
 and call the information"""
 
 print(all_data)
 
-#read files
+#Setting up the files column
 headers = ['date', 'total_income', 'total_expenses']
+""" 
+When we read the files from the DB, it will also return the ID aswell,
+which we don't need it. """
 
 df = pd.DataFrame(all_data)
 df = df[headers]
 df = df.drop('total_expenses', axis=1)
 df['date'] = pd.to_datetime(df['date'], dayfirst=True)
 
-#This will return the first 5 rows
+#This will return the first 5 rows, to check if everything is working
 print(df.head())
 
 #Convert the data types of date
@@ -52,7 +54,7 @@ This code returns the income difference between the previous day"""
 daily_money['income_diff'] = daily_money['total_income'].diff()
 daily_money = daily_money.dropna()
 
-# #Sketching the scatter plot of the user overall income within a one year period 
+ #Sketching the scatter plot of the user overall income within a one year period 
 plt.figure(figsize=(20,7))
 plt.plot(daily_money['date'],daily_money['income_diff'], color = 'red')
 plt.plot(daily_money['date'],daily_money['total_income'])
@@ -66,6 +68,7 @@ plt.show()
 supervised_data = daily_money.drop(['date','total_income'], axis=1)
 
 #Set up supervised data
+"""The range is the 12 months of the year."""
 for i in range(1,13):
     col_name = 'day_ ' + str(i) 
     supervised_data[col_name] = supervised_data['income_diff'].shift(i)
@@ -84,6 +87,13 @@ x_train, y_train = train_data[:,1:], train_data[:,0:1]
 x_test, y_test = test_data[:,1:], train_data[:,0:1]
 y_train = y_train.ravel()
 y_test = y_test.ravel()
+
+"""
+Even though there are training and testing variables.
+We haven't actually train any dataset.
+As we didn't use the train_test_split function to do so.
+We just named it as that way for easy references"""
+
 
 #Makijng income prediction
 df = daily_money['date'][-12:].reset_index(drop = True)
