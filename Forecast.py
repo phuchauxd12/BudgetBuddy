@@ -8,7 +8,7 @@ from pymongo import MongoClient
 import json
 
 #Retrieve information from DB
-mongoClient = MongoClient('mongodb+srv://userDB:InC2QuunWeQUFOCm@userdb.opquo83.mongodb.net/') # Insert a differnet mongoDB link
+mongoClient = MongoClient('mongodb+srv://phuchauxd12:Abcd0123@cluster0.lf8sh9p.mongodb.net/') # Insert a differnet mongoDB link
 
 # mongoClient = pymongo.MongoClient()   
 db = mongoClient['UserBank']
