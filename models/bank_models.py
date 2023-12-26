@@ -2,6 +2,6 @@ from datetime import date
 from pydantic import BaseModel
 
 class Bank(BaseModel):
-    name: date 
+    date: date
     total_income: float
     total_expenses: float
