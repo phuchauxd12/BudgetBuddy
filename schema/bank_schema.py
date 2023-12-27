@@ -7,4 +7,5 @@ def bankEntity(item) -> dict:
     }
     
 def banksEntity(entity)-> list:
-    return[bankEntity(item) for item in entity  ]
+    return[bankEntity(item) for item in entity ]
+
