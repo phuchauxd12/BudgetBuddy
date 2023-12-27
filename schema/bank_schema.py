@@ -1,7 +1,7 @@
 def bankEntity(item) -> dict:
     return  {
         'id': str(item["_id"]),
-        'date': item['date'],
+        'date': ['date'],
         'total_income': item['total_income'],
         'total_expenses': item['total_expenses']
     }
