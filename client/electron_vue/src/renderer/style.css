@@ -1,0 +1,136 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+@media screen and (min-width: 1000px){
+  .homebar {
+    top: 10px;
+    left: 350px;
+    position:absolute;
+  }
+  .homebar ul {
+    display: flex;
+    flex-direction: row;
+  }
+  .homebar ul li {
+    padding-right: 30px;
+  }
+}
+a {
+  padding-left: 20px;
+  font-weight: 500;
+  color: #7073B2;
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  min-width: 320px;
+  min-height: 100vh;
+  background-image: linear-gradient(to bottom right, #2B308E, #000000);
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+}
+.networth {
+position: absolute;
+left: 50px;
+top: 60px;
+}
+.label{
+  display: inline;
+}
+.total p{
+  color: #7073B2;
+  padding-right: 140px;
+}
+.total h2{
+  color: rgb(255, 255, 255);
+}
+.networth_container{
+  margin-top: 10px;
+  padding: 4px;
+  background-color: #7981d030;
+  border-radius: 15px;
+  height: 600px;
+}
+.bank_acc{
+  color: white;
+  margin: 15px;
+  display:block;
+  font-size: 14px;
+}
+.bank_acc p {
+  color:#ffffff;
+  font-weight: 700;
+  margin: 7px;
+}
+
+button{
+  background-color: #6A56E7;
+  width: 240px;
+  border: none;
+  border-radius: 20px;
+  padding: 7px;
+  display: flex;
+  justify-content: space-between;
+}
+.add{
+  color: white;
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  padding: 13px;
+  font-weight: 700;
+  justify-content: center;
+}
+
+.screen{
+  background-color: #ffffff14;
+  position: absolute;
+  left: 372px;
+  top: 80px;
+  width: 60%;
+  height: 86%;
+  border-radius: 20px;
+}
+@media screen and (min-width: 1400px){
+  .screen{
+    width: 70%;
+  }
+}

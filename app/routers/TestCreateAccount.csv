@@ -1,0 +1,4 @@
+account_name,account_type ,current_balance,bank_name
+test_import_1,Investment,400000000,VIETCOMBANK
+test_import_2,Investment,600000000,VIETCOMBANK
+test_import3,Saving,800000000,TECHCOMBANK
