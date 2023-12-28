@@ -12,10 +12,10 @@ mongoClient = MongoClient('mongodb+srv://userDB:InC2QuunWeQUFOCm@userdb.opquo83.
 
 # Access to the mongo database and collection
 db = mongoClient['UserBank']
-collection = db['Bank'] 
+collection = db['BankTest'] 
 
 # enter the collection name
-data = db.get_collection('Bank')
+data = db.get_collection('BankTest')
 
 #find all data from mongoDB collections
 all_data = collection.find()
@@ -45,15 +45,15 @@ daily_money['date'] = daily_money['date'].dt.to_timestamp()
 print(daily_money['date'])
 
 
-# #Split test for training and dataset
-x = df.drop(['date','total_expenses'], axis=1)
-y = df['total_expenses']
+# # #Split test for training and dataset
+# x = df.drop(['date','total_expenses'], axis=1)
+# y = df['total_expenses']
 
-"""
-This code returns the income difference between the previous day"""
+# """
+# This code returns the income difference between the previous day"""
 
-daily_money['income_diff'] = daily_money['total_expenses'].diff()
-daily_money = daily_money.dropna()
+# daily_money['income_diff'] = daily_money['total_expenses'].diff()
+# daily_money = daily_money.dropna()
 
  #Sketching the scatter plot of the user overall income within a one year period 
 # plt.figure(figsize=(20,7))
@@ -66,15 +66,15 @@ daily_money = daily_money.dropna()
 # plt.show()
 
 # #Creating a supervised data 
-supervised_data = daily_money.drop(['date','total_expenses'], axis=1)
+# supervised_data = daily_money.drop(['date','total_expenses'], axis=1)
 
-#Set up supervised data
-"""The range is the 12 months of the year."""
-for i in range(1,13):
-    col_name = 'month_ ' + str(i) 
-    supervised_data[col_name] = supervised_data['income_diff'].shift(i)
-supervised_data = supervised_data.dropna().reset_index(drop = True)
-print(supervised_data)
+# #Set up supervised data
+# """The range is the 12 months of the year."""
+# for i in range(1,13):
+#     col_name = 'month_ ' + str(i) 
+#     supervised_data[col_name] = supervised_data['income_diff'].shift(i)
+# supervised_data = supervised_data.dropna().reset_index(drop = True)
+# print(supervised_data)
 
 # train_data = supervised_data[:-12]
 # test_data = supervised_data[-12:]

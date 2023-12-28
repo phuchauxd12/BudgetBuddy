@@ -1,7 +1,7 @@
 from fastapi import APIRouter
-from models.bank_models import Bank
-from db.db import connection, db, collection
-from schema.bank_schema import bankEntity, banksEntity
+from app.models.bank_models import Bank
+from app.db.db import connection, db, collection
+from app.schema.bank_schema import bankEntity, banksEntity
 from bson import objectid
 
 bank = APIRouter()
