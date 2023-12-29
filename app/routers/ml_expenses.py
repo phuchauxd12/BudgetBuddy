@@ -110,6 +110,19 @@ for index in range(0, len(lr_predict)):
 lr_pre_series = pd.Series(result, name = 'Linear Prediction')
 predict_df = predict_df.merge(lr_pre_series, left_index=True, right_index= True)
 
+#Visualisation of prediction plt.figure(figsize=(20,7))
+    #Actual Income
+# plt.figure(figsize=(20,7))
+plt.plot(daily_expenses['date'],daily_expenses['total_expenses'])
+    #Predicted Income
+plt.plot(predict_df['date'],predict_df['Linear Prediction'])
+plt.xlabel('Date')
+plt.ylabel('Total Expenses($)')
+plt.title('User predicted Expenses')
+plt.legend(['Actual Expenses','Predicted Expenses'])
+# plt.show()
+
+
 @ml_expenses_forecast.get('/predicted_expenses')
 async def expenses_prediction():
     prediction = lr.score(x_train, y_train)

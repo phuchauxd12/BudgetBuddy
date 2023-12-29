@@ -113,6 +113,21 @@ predict_df = predict_df.merge(lr_pre_series, left_index=True, right_index= True)
 
 """
 For the income prediction, it will need at least 30 data values in order to predict its income """
+
+#Visualisation of prediction plt.figure(figsize=(20,7))
+    #Actual Income
+plt.figure(figsize=(20,7))
+plt.plot(daily_money['date'],daily_money['total_income'])
+
+    #Predicted Income
+plt.plot(predict_df['date'],predict_df['Linear Prediction'])
+plt.xlabel('Date')
+plt.ylabel('Total Income($)')
+plt.title('User predicted Income')
+plt.legend(['Actual Income','Predicted Income'])
+# plt.show()
+
+
 @ml_income_forecast.get('/')
 async def income_prediction():
     prediction = lr.score(x_train, y_train)
