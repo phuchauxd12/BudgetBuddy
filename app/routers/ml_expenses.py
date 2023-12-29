@@ -13,7 +13,7 @@ from pymongo import MongoClient
 
 
 #Link to client
-ml_income_forecast = APIRouter(prefix="/api/v1")
+ml_expenses_forecast = APIRouter(prefix="/api/v1")
 connection = MongoClient()
 CLIENT = MongoClient(host=Constant.MONGODB_URI).get_database("dev")
 collection = CLIENT.get_collection('IncomeFlow')
@@ -23,6 +23,8 @@ all_data = collection.find()
 """ This will find the data form the mongoDB
 and call the information"""
 
+
+#Setting up the files column
 headers = ['date', 'total_income', 'total_expenses']
 """ 
 When we read the files from the DB, it will also return the ID aswell,
@@ -31,41 +33,41 @@ which we don't need it. """
 df = pd.DataFrame(all_data)
 df = df[headers]
 df['date'] = pd.to_datetime(df['date'], dayfirst=True)
-df = df[:150]
+df = df[0:150]
 
 #Convert the data types of date
-daily_money = df.groupby('date').sum().reset_index()
+daily_expenses = df.groupby('date').sum().reset_index()
 
 # #Split x and y
-x = df.drop(['total_income'], axis=1)
-y = df['total_income']
-
+x = df.drop(['total_expenses'], axis=1)
+y = df['total_expenses']
 """
-This code returns the income difference between the previous day"""
+This code returns the expenses difference between the previous day"""
 
-daily_money['income_diff'] = daily_money['total_income'].diff()
-daily_money = daily_money.dropna()
+daily_expenses['expenses_diff'] = daily_expenses['total_expenses'].diff()
+daily_expenses = daily_expenses.dropna()
 
 #Sketching the plot of the user overall income within a one year period 
 plt.figure(figsize=(20,7))
-plt.plot(daily_money['date'],daily_money['income_diff'], color = 'red')
-plt.plot(daily_money['date'],daily_money['total_income'])
+plt.plot(daily_expenses['date'],daily_expenses['expenses_diff'], color = 'red')
+plt.plot(daily_expenses['date'],daily_expenses['total_expenses'])
 plt.xlabel('Date')
 plt.ylabel('Total Income($)')
 plt.legend(['Income','Income difference compared to previous month'])
 plt.title('User total income')
 # plt.show()
 
+
 #Creating a supervised data 
-supervised_data = daily_money.drop(['date','total_income'], axis=1)
+supervised_data = daily_expenses.drop(['date','total_expenses'], axis=1)
 
 #Set up supervised data
 """The range is the 12 months of the year."""
 for i in range(1,13):
     col_name = 'month_ ' + str(i) 
-    supervised_data[col_name] = supervised_data['income_diff'].shift(i)
+    supervised_data[col_name] = supervised_data['expenses_diff'].shift(i)
 supervised_data = supervised_data.dropna().reset_index(drop = True)
-print(supervised_data)
+# print(supervised_data)
 
 train_data = supervised_data[:-12]
 test_data = supervised_data[-12:]
@@ -86,12 +88,11 @@ We haven't actually train any dataset.
 As we didn't use the train_test_split function to do so.
 We just named it as that way for easy references"""
 
-
-#Makijng income prediction
-df = daily_money['date'][-12:].reset_index(drop = True)
+#Making Expenses prediction
+df = daily_expenses['date'][-12:].reset_index(drop = True)
 predict_df = pd.DataFrame(df)
 
-cor_income = daily_money['total_income'][:].to_list()
+cor_income = daily_expenses['total_income'][:].to_list()
 
 #Linear Regression
 """ Linear Regression
@@ -100,10 +101,8 @@ lr = LinearRegression()
 lr.fit(x_train, y_train)
 lr_predict = lr.predict(x_test)
 
-
 lr_predict = lr_predict.reshape(-1,1)
-lr.score(x_train, y_train)
-
+# lr.score(x_train, y_train)
 
 result = []
 for index in range(0, len(lr_predict)):
@@ -111,14 +110,13 @@ for index in range(0, len(lr_predict)):
 lr_pre_series = pd.Series(result, name = 'Linear Prediction')
 predict_df = predict_df.merge(lr_pre_series, left_index=True, right_index= True)
 
-"""
-For the income prediction, it will need at least 30 data values in order to predict its income """
-@ml_income_forecast.get('/')
-async def income_prediction():
+@ml_expenses_forecast.get('/predicted_expenses')
+async def expenses_prediction():
     prediction = lr.score(x_train, y_train)
     drop_date = predict_df.drop('date',axis=1)
     if prediction > 0.5:
-        return 'High Accuracy Score', 'Accuracy of the Prediction:',prediction,'Predicted Income are:', drop_date 
+        return 'High Accuracy Score', 'Accuracy of the Prediction:',prediction,'Predicted Expenses are:', drop_date 
     else:
-        return 'Low prediction Score','Accuracy of the Prediction:',prediction, 'Predicted Income are:',drop_date
+        return 'Low prediction Score','Accuracy of the Prediction:',prediction, 'Predicted Expenses are:', drop_date
     
+
