@@ -1,9 +1,8 @@
 from fastapi import APIRouter, FastAPI, HTTPException
 from bson import ObjectId, objectid
 from pymongo import MongoClient
-from ml_model import data_input
+from constant import Constant
 import json
-import pickle
 import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime
@@ -15,13 +14,10 @@ from pymongo import MongoClient
 #Retrieve information from DB
 mongoClient = MongoClient('') # Insert a differnet mongoDB link
 
-# Access to the mongo database and collection
-db = mongoClient['UserBank']
-collection = db['Bank'] 
-
-
-# enter the collection name
-data = db.get_collection('Bank')
+bank = APIRouter(prefix="/api/v1")
+connection = MongoClient()
+CLIENT = MongoClient(host=Constant.MONGODB_URI).get_database("dev")
+collection = CLIENT.get_collection('IncomeFlow')
 
 #find all data from mongoDB collections
 all_data = collection.find()
