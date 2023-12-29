@@ -13,7 +13,7 @@ from pymongo import MongoClient
 
 
 #Link to client
-ml_expenses_forecast = APIRouter(prefix="/api/v1")
+router = APIRouter(prefix="/api/v1",tags=["Money Prediction"])
 connection = MongoClient()
 CLIENT = MongoClient(host=Constant.MONGODB_URI).get_database("dev")
 collection = CLIENT.get_collection('IncomeFlow')
@@ -49,13 +49,13 @@ daily_expenses['expenses_diff'] = daily_expenses['total_expenses'].diff()
 daily_expenses = daily_expenses.dropna()
 
 #Sketching the plot of the user overall income within a one year period 
-plt.figure(figsize=(20,7))
-plt.plot(daily_expenses['date'],daily_expenses['expenses_diff'], color = 'red')
-plt.plot(daily_expenses['date'],daily_expenses['total_expenses'])
-plt.xlabel('Date')
-plt.ylabel('Total Income($)')
-plt.legend(['Income','Income difference compared to previous month'])
-plt.title('User total income')
+# plt.figure(figsize=(20,7))
+# plt.plot(daily_expenses['date'],daily_expenses['expenses_diff'], color = 'red')
+# plt.plot(daily_expenses['date'],daily_expenses['total_expenses'])
+# plt.xlabel('Date')
+# plt.ylabel('Total Income($)')
+# plt.legend(['Income','Income difference compared to previous month'])
+# plt.title('User total income')
 # plt.show()
 
 #Creating a supervised data 
@@ -122,13 +122,13 @@ plt.xlabel('Date')
 plt.ylabel('Total Expenses($)')
 plt.title('User predicted Expenses')
 plt.legend(['Actual Expenses','Predicted Expenses'])
-# plt.show()
+display_graph = plt.show()
 
 """
     For the income prediction, it will need at least 30 data values in order to make prediction  """
 
-@ml_expenses_forecast.get('/predicted_expenses')
-async def expenses_prediction():
+@router.get('/predicted_expenses')
+def expenses_prediction():
     prediction = lr.score(x_train, y_train)
     drop_date = predict_df.drop('date',axis=1)
     if prediction > 0.5:

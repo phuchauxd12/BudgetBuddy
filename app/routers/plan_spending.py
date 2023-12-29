@@ -6,12 +6,13 @@ from bson import ObjectId
 from constant import Constant
 from pymongo import MongoClient
 
-from models.plan_spending import PlannedSpendingModel, PlannedSpendingModelView
+from models.plan_spending import PlannedSpendingModel, PlannedSpendingModelView, MonthlyExpensePlan, MonthlyExpensePlanModelView
 
 router = APIRouter(prefix="/api/v1", tags=["Plan Settings"])
 
 CLIENT = MongoClient(host=Constant.MONGODB_URI).get_database("dev")
 PLANNING_SPENDING_COLLECTION = CLIENT.get_collection("PLANNING_SPENDING")
+EXPENSE_SPENDING_COLLECTION = CLIENT.get_collection("EXPENSE_SPENDING")
 
 
 @router.post("/plan_spending/{user_id}/create")
@@ -73,4 +74,39 @@ def delete_spending(user_id: str, spending_id: str):
         raise HTTPException(status_code=400, detail="Spending does not exist")
     
     PLANNING_SPENDING_COLLECTION.delete_one({"_id": ObjectId(spending_id), })
-    return JSONResponse(status_code=200, content={"message": "Spending deleted successfully"})    
+    return JSONResponse(status_code=200, content={"message": "Spending deleted successfully"})
+
+
+@router.post("/monthly_expense_plan/{user_id}/create")
+def create_monthly_expense_plan(
+    user_id: str,
+    category: str = Form(..., description="Category of the spending"),
+    initial_amount: int | float = Form(..., description="Initial amount of the spending"),
+):
+    if EXPENSE_SPENDING_COLLECTION.find_one({"user_id": ObjectId(user_id), "category": category}) is not None:
+        raise HTTPException(status_code=400, detail="Spending name already exist")
+    
+    spending = MonthlyExpensePlan(
+        user_id=ObjectId(user_id),
+        category=category,
+        initial_amount=initial_amount,
+        current_total_use=0,
+    ).dict()
+    EXPENSE_SPENDING_COLLECTION.insert_one(spending)
+    return JSONResponse(status_code=200, content={"message": "Spending created successfully"})
+
+@router.get("/monthly_expense_plan/{user_id}")
+def get_all_monthly_expense_plan(user_id: str):
+    spending = EXPENSE_SPENDING_COLLECTION.find({"user_id": ObjectId(user_id)})
+    return JSONResponse(
+        status_code=200,
+        content=[MonthlyExpensePlanModelView(**spending).dict() for spending in spending])
+    
+@router.delete("/monthly_expense_plan/{user_id}/{spending_id}")
+def delete_monthly_expense_plan(user_id: str, spending_id: str):
+    spending = EXPENSE_SPENDING_COLLECTION.find_one({"_id": ObjectId(spending_id)})
+    if spending is None:
+        raise HTTPException(status_code=400, detail="Spending does not exist")
+    
+    EXPENSE_SPENDING_COLLECTION.delete_one({"_id": ObjectId(spending_id), })
+    return JSONResponse(status_code=200, content={"message": "Spending deleted successfully"})

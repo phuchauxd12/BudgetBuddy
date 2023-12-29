@@ -12,7 +12,7 @@ from routers import (
     bank_account, bank_info,
     profile, login, goal,
     transaction, bank_account_import,
-    user_bills, plan_spending, stock)
+    user_bills, plan_spending, investment_api, ml_expenses, ml_income, income_flow)
 
 
 app = FastAPI(
@@ -29,7 +29,7 @@ app.add_middleware(
 
 app.include_router(register.router)
 app.include_router(plan_spending.router)
-app.include_router(stock.router)
+app.include_router(investment_api.router)
 app.include_router(newsletter.router)
 app.include_router(bank_account.router)
 app.include_router(bank_info.router)
@@ -39,5 +39,8 @@ app.include_router(goal.router)
 app.include_router(transaction.router)
 app.include_router(bank_account_import.router)
 app.include_router(user_bills.router)
+app.include_router(income_flow.router)
+app.include_router(ml_expenses.router)
+app.include_router(ml_income.router)
 if __name__ == "__main__":
     uvicorn.run("main:app", workers=1, host="0.0.0.0", port=8080)

@@ -1,26 +1,47 @@
 from pymongo import MongoClient
 import pandas as pd
 import os
-from fastapi import APIRouter, File, UploadFile, Form
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException
 from fastapi.responses import JSONResponse
 from io import BytesIO
 from models.transaction import Transaction, GetTransactionInformation
 from bson import ObjectId 
-from datetime import datetime
 from constant import Constant
 
 router = APIRouter(prefix="/api/v1", tags=["Import Transaction"])
 client = MongoClient(host=Constant.MONGODB_URI).get_database("dev")
 db = client.get_collection("TRANSACTION_HISTORY")
-ACCOUNT_COLLECTION = client.get_collection("ACCOUNTS")
 SAVING_COLLECTION = client.get_collection("SAVING_ACCOUNTS")
 INVESTMENT_COLLECTION = client.get_collection("INVESTMENT_ACCOUNTS")
 EXPENSE_COLLECTION = client.get_collection("EXPENSE_ACCOUNTS")
+PLAN_EXPENSE_COLLECTION = client.get_collection("EXPENSE_SPENDING")
+GOAL_SETTINGS = client.get_collection("GOAL_SETTINGS")
+
 MODEL = {
     "Saving": SAVING_COLLECTION,
     "Investment": INVESTMENT_COLLECTION,
     "Expense": EXPENSE_COLLECTION,
 }
+
+def update_expense_value_transaction(transaction_type, amount, user_id):
+    expense = PLAN_EXPENSE_COLLECTION.find_one({"user_id": ObjectId(user_id), "category": transaction_type})
+    if expense is not None:
+        PLAN_EXPENSE_COLLECTION.update_one(
+            {"user_id": ObjectId(user_id), "category": transaction_type},
+            {"$set": {
+                "current_total_use": expense["current_total_use"] + amount
+            }}
+        )
+
+def update_goal_settings(user_id, amount):
+    goal = GOAL_SETTINGS.find_one({"user_id": ObjectId(user_id)})
+    if goal is not None:
+        GOAL_SETTINGS.update_one(
+            {"user_id": ObjectId(user_id)},
+            {"$set": {
+                "saving_amount": goal["saving_amount"] + amount
+            }}
+        )
 
 @router.post('/transaction/{user_id}/create')
 def post_transaction(user_id: str,
@@ -32,41 +53,50 @@ def post_transaction(user_id: str,
                     account_type: str = Form(..., description="Type of the account"),
                     transaction_type: str = Form(..., description="Type of the transaction"),):
 
-
-    try:
-        if account_type not in MODEL:
-            return JSONResponse(status_code=422, content={"message": "Invalid account type"})
-        
-        # Check if account exists
-        account = MODEL[account_type].find_one({"user_id": ObjectId(user_id), "account_name": account_name})
-        if account is None:
-            return JSONResponse(status_code=404, content={'message': "Account does not exist."})
-        account_id = account["_id"]
-                
-        # Check if the transaction already exists 
-        existing_transaction = db.find_one({
-            "transaction_name": transaction_name,
-            "Payee": Payee,
-            "transaction_date": transaction_date,
-            "Amount": Amount,
-            "account_name": account_name,
-            "account_type": account_type,
-            "account_id": ObjectId(account_id),
-            "transaction_type": transaction_type,
-            "user_id": ObjectId(user_id)
-        })
-        if existing_transaction is not None:
-            return JSONResponse(status_code=409, content={"message": "Transaction already exists"})
-        
-        db.insert_one(
-            Transaction(transaction_name= transaction_name, Payee= Payee, transaction_date= transaction_date, Amount= Amount,
-                        account_name= account_name, account_type= account_type,account_id=ObjectId(account_id), 
-                        transaction_type= transaction_type, user_id= ObjectId(user_id)
-                        ).dict()
+    if account_type not in MODEL:
+        raise HTTPException(status_code=422, detail="Invalid account type")
+    
+    # Check if account exists
+    account = MODEL[account_type].find_one({"user_id": ObjectId(user_id), "account_name": account_name})
+    if account is None:
+        raise HTTPException(status_code=404, detail="Account does not exist.")
+    account_id = account["_id"]
+            
+    # Check if the transaction already exists 
+    existing_transaction = db.find_one({
+        "transaction_name": transaction_name,
+        "Payee": Payee,
+        "transaction_date": transaction_date,
+        "Amount": Amount,
+        "account_name": account_name,
+        "account_type": account_type,
+        "account_id": ObjectId(account_id),
+        "transaction_type": transaction_type,
+        "user_id": ObjectId(user_id)
+    })
+    if existing_transaction is not None:
+        raise HTTPException(status_code=409, detail="Transaction already exists")
+    
+    db.insert_one(
+        Transaction(transaction_name= transaction_name, Payee= Payee, transaction_date= transaction_date, Amount= Amount,
+                    account_name= account_name, account_type= account_type,account_id=ObjectId(account_id), 
+                    transaction_type= transaction_type, user_id= ObjectId(user_id)
+                    ).dict()
+    )
+    
+    if transaction_type == "Income":
+        MODEL[account_type].update_one(
+            {"user_id": ObjectId(user_id), "account_name": account_name},
+            {"$inc": {"current_balance": Amount}}
         )
-        return JSONResponse(content={"message": "Transaction created successfully"})
-    except Exception as e:
-        return JSONResponse(content={"error": str(e)})
+    else:
+        MODEL[account_type].update_one(
+            {"user_id": ObjectId(user_id), "account_name": account_name},
+            {"$inc": {"current_balance": -Amount}}
+        )
+        update_expense_value_transaction(transaction_type, Amount, user_id)
+    return JSONResponse(content={"message": "Transaction created successfully"})
+
 
 @router.post('/transaction/{user_id}/import_csv')
 def import_transaction(user_id: str,csv_file: UploadFile = File(...)):
