@@ -26,6 +26,7 @@ and call the information"""
 
 #Setting up the files column
 headers = ['date', 'total_income', 'total_expenses']
+
 """ 
 When we read the files from the DB, it will also return the ID aswell,
 which we don't need it. """
@@ -56,7 +57,6 @@ plt.ylabel('Total Income($)')
 plt.legend(['Income','Income difference compared to previous month'])
 plt.title('User total income')
 # plt.show()
-
 
 #Creating a supervised data 
 supervised_data = daily_expenses.drop(['date','total_expenses'], axis=1)
@@ -97,6 +97,8 @@ cor_income = daily_expenses['total_income'][:].to_list()
 #Linear Regression
 """ Linear Regression
 is one of the many other ways that we can use for model prediction"""
+
+
 lr = LinearRegression()
 lr.fit(x_train, y_train)
 lr_predict = lr.predict(x_test)
@@ -122,6 +124,8 @@ plt.title('User predicted Expenses')
 plt.legend(['Actual Expenses','Predicted Expenses'])
 # plt.show()
 
+"""
+    For the income prediction, it will need at least 30 data values in order to make prediction  """
 
 @ml_expenses_forecast.get('/predicted_expenses')
 async def expenses_prediction():

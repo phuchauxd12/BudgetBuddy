@@ -86,7 +86,6 @@ We haven't actually train any dataset.
 As we didn't use the train_test_split function to do so.
 We just named it as that way for easy references"""
 
-
 #Makijng income prediction
 df = daily_money['date'][-12:].reset_index(drop = True)
 predict_df = pd.DataFrame(df)
@@ -104,15 +103,12 @@ lr_predict = lr.predict(x_test)
 lr_predict = lr_predict.reshape(-1,1)
 lr.score(x_train, y_train)
 
-
 result = []
 for index in range(0, len(lr_predict)):
     result.append(lr_predict[index][0] + cor_income[index])
 lr_pre_series = pd.Series(result, name = 'Linear Prediction')
 predict_df = predict_df.merge(lr_pre_series, left_index=True, right_index= True)
 
-"""
-For the income prediction, it will need at least 30 data values in order to predict its income """
 
 #Visualisation of prediction plt.figure(figsize=(20,7))
     #Actual Income
@@ -127,6 +123,9 @@ plt.title('User predicted Income')
 plt.legend(['Actual Income','Predicted Income'])
 # plt.show()
 
+"""
+    For the income prediction, it will need at least 30 data values in order to make prediction  """
+    
 
 @ml_income_forecast.get('/')
 async def income_prediction():
