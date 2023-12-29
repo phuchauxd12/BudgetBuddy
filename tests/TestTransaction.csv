@@ -1,0 +1,4 @@
+Transaction Name,Payee,Transaction Date,Amount,account_name,account_type,transaction_type
+Transfer money to Huy Vo,Huy,2023-11-20,10000000,test_import_1,Investment,Entertainment
+Transfer money to Highlands,Highlands,2023-10-21,5000000,test_import_2,Investment,Entertainment
+Monthly Pay Back Usage,Netflix,2023-12-20,500,test_import_3,Saving,Entertainment

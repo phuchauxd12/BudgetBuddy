@@ -22,17 +22,14 @@ def create_bill(
     if existing_bill is not None:
         return JSONResponse(status_code=409, content={"message": "Bill already exists"})
     
-    try:
-        datetime.strptime(recurrent_date_value, "%Y-%m-%d")
-    except ValueError:
-        return JSONResponse(status_code=422, content="Invalid date format. Please use YYYY-MM-DD.")
-
-    try:
-        db.insert_one(BillCreate(user_id= ObjectId(user_id), bill_name= bill_name, bill_value= bill_value, recurrent_reminder= recurrent_reminder,
+    recurrent_date = datetime.strptime(recurrent_date_value, "%Y-%m-%d").date()
+    if recurrent_date < datetime.now().date():
+        return JSONResponse(status_code=400, content="Recurrent date cannot be in the past")
+    
+    db.insert_one(BillCreate(user_id= ObjectId(user_id), bill_name= bill_name, bill_value= bill_value, recurrent_reminder= recurrent_reminder,
                                  recurrent_date_value= recurrent_date_value).dict())
-        return  JSONResponse(content= {"message": "Create bill successfully"})
-    except ValueError as e:
-        return JSONResponse(status_code=400, content={"message": f"Error creating bill: {str(e)}"})
+    return  JSONResponse(content= {"message": "Create bill successfully"})
+ 
 
 @router.get("/user_bill/{user_id}", responses = {409: {"model": Message},
                                       422: {"model": Message},
@@ -47,11 +44,11 @@ def get_bill(user_id: str,):
                 recurrent_date_value=value["recurrent_date_value"],
                 recurrent_reminder=value["recurrent_reminder"]
             ).dict()
-            for value in list_bills
+            for value in list_bills if value["recurrent_reminder"] == True 
         ]
 
     if not array:
-        return JSONResponse(status_code=404, content={'message': "User does not exist."})
+        return JSONResponse(status_code=404, content={'message': "User does not exist or recurrent remider is false."})
         
     return JSONResponse(content=array)
 
@@ -77,10 +74,9 @@ def update_bill(
         update_data["recurrent_reminder"] = recurrent_reminder
 
     if recurrent_date_value is not None:
-        try:
-            datetime.strptime(recurrent_date_value, "%Y-%m-%d")
-        except ValueError:
-            return JSONResponse(status_code=422, content="Invalid date format. Please use YYYY-MM-DD.")
+        recurrent_date = datetime.strptime(recurrent_date_value, "%Y-%m-%d").date()
+        if recurrent_date < datetime.now().date():
+            return JSONResponse(status_code=400, content="Recurrent date cannot be in the past")
         update_data["recurrent_date_value"] = recurrent_date_value
 
     db.update_one({"user_id": ObjectId(user_id), "_id": ObjectId(bill_id)}, {"$set": update_data})
