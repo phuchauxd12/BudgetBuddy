@@ -117,8 +117,12 @@ for index in range(0, len(lr_pre_test_set)):
 lr_pre_series = pd.Series(result, name = 'Linear Prediction')
 predict_df = predict_df.merge(lr_pre_series, left_index=True, right_index= True)
 
+
+"""
+For the income prediction, it will need at least 30 data values in order to predict its income """
+
 @ml.get('/')
-async def test():
+async def income_prediction():
     prediction = lr.score(x_train, y_train)
     drop_date = predict_df.drop('date',axis=1)
     if prediction > 0.5:
