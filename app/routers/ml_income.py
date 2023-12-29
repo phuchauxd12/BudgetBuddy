@@ -13,7 +13,7 @@ from sklearn.preprocessing import MinMaxScaler
 from pymongo import MongoClient
 
 #Retrieve information from DB
-mongoClient = MongoClient('mongodb+srv://userDB:InC2QuunWeQUFOCm@userdb.opquo83.mongodb.net/') # Insert a differnet mongoDB link
+mongoClient = MongoClient('') # Insert a differnet mongoDB link
 
 # Access to the mongo database and collection
 db = mongoClient['UserBank']
