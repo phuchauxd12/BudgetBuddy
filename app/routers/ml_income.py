@@ -59,7 +59,6 @@ plt.legend(['Income','Income difference compared to previous month'])
 plt.title('User total income')
 # plt.show()
 
-
 #Creating a supervised data 
 supervised_data = daily_money.drop(['date','total_income'], axis=1)
 
@@ -106,21 +105,17 @@ lr_predict = lr.predict(x_test)
 
 
 lr_predict = lr_predict.reshape(-1,1)
-lr_pre_test_set  = np.concatenate([lr_predict, x_test], axis=1)
-lr_pre_test_set = scaler.inverse_transform(lr_pre_test_set)
 lr.score(x_train, y_train)
 
 
 result = []
-for index in range(0, len(lr_pre_test_set)):
-    result.append(lr_pre_test_set[index][0] + cor_income[index])
+for index in range(0, len(lr_predict)):
+    result.append(lr_predict[index][0] + cor_income[index])
 lr_pre_series = pd.Series(result, name = 'Linear Prediction')
 predict_df = predict_df.merge(lr_pre_series, left_index=True, right_index= True)
 
-
 """
 For the income prediction, it will need at least 30 data values in order to predict its income """
-
 @ml.get('/')
 async def income_prediction():
     prediction = lr.score(x_train, y_train)
@@ -130,4 +125,3 @@ async def income_prediction():
     else:
         return 'Low prediction Score','Accuracy of the Prediction:',prediction, 'Predicted Income are:',drop_date
     
-
