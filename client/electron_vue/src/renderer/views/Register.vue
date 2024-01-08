@@ -2,7 +2,9 @@
 <script setup lang="ts">
 import axios from 'axios';
 import { ref, reactive} from 'vue';
-import router from '../router/router';
+import { useRoute, useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const state = reactive({
   full_name: ref(''),
