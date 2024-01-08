@@ -80,6 +80,7 @@ async function editPro() {
     });
 
     console.log('check:', response.data);
+    closeModal();
 
     // Handle success or update UI accordingly
   } catch (error) {

@@ -51,10 +51,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, toRefs, watch } from 'vue';
+import { ref, onMounted, toRefs, watch, watchEffect } from 'vue';
 import axios from 'axios';
 
-const user_id = '657deedb53a90ee98e224654';
+const user_id = '6593ccdf025b256e0ffe24e8';
 const userIncome = ref([]);
 const userSubscription = ref([]);
 const userBill = ref([]);
@@ -62,16 +62,15 @@ const isShow = ref(false);
 const isShow2 = ref(false);
 const isShow3 = ref(false);
 const { month, year }  = defineProps(['month', 'year']);
-let that_month = toRefs(month);
-let that_year = toRefs(year);
+let that_month = ref(month);
+let that_year = ref(year);
 let editData = ref(null)
 let deleteId = ref(null)
 
-watch(that_month,() => {
-  // This will run whenever the 'month' or 'year' props change
-  console.log('Fetching data for month:', month);
-  console.log('Fetching data for year:', year);// Call your function to fetch data based on month and year
-});
+watchEffect(async () => {
+  console.log('newmonth',that_month.value)
+  
+})
 
 const fetchPlan = async () => {
   try {

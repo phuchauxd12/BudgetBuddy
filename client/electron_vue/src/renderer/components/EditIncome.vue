@@ -92,6 +92,7 @@
       });
   
       console.log('Server response:', response.data);
+      closeModal();
   
       // Handle success or update UI accordingly
     } catch (error) {

@@ -62,10 +62,8 @@
   }
   
   async function addBill() {
-    // Convert string inputs to numbers using parseFloat
     const billAmount = parseFloat(amount.value);
   
-    // Create the request payload
     const requestData = {
       bill_name: billname.value,
       bill_value: billAmount,
@@ -74,25 +72,23 @@
 
     };
   
-    // Log the data before making the request
     console.log('Sending data to server:', requestData);
   
-    // Make the HTTP request
     try {
       const response = await axios.post(`http://localhost:8080/api/v1/user_bill/${user_id}/create`, requestData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-      withCredentials: true, // Include credentials in the request
+      withCredentials: true, 
       });
   
       console.log('Server response:', response.data);
-  
-      // Handle success or update UI accordingly
+      
+      closeModal();
+
     } catch (error) {
       console.error('Error:', error.response.data);
   
-      // Handle error or update UI accordingly
     }
   }
   onMounted(() => {

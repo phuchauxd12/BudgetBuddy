@@ -125,6 +125,7 @@ async function createAccount() {
     });
 
     console.log('Server response:', response.data);
+    closeModal();
 
     // Handle success or update UI accordingly
   } catch (error) {
@@ -153,6 +154,7 @@ async function importFile() {
     });
 
     console.log('Server response:', response.data);
+    closeModal();
 
     // Handle success or update UI accordingly
   } catch (error) {

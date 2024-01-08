@@ -79,6 +79,7 @@
   
     // Log the data before making the request
     console.log('Sending data to server:', requestData);
+    closeModal();
   
     // Make the HTTP request
     try {

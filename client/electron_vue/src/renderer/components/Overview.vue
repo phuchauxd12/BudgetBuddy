@@ -1,51 +1,32 @@
 <template>
   <div class='grid'>
     <div class="calender">
-      <Calendar :attributes="attributes" />
+      <Calendar :attributes="attributes" expanded/>
     </div>
     <div class="twolines">
-      <div class="total_saving">Total Saving: {{ totalSaving }}</div>
-      <div class="investment">Investment: {{ totalInvestment }}</div>
+      <div class="total_saving"><router-link to="/plan">Total Saving: {{ totalSaving }}</router-link></div>
+      <div class="investment"><router-link to="/report">Investment: {{ totalInvestment }}</router-link></div>
     </div>
     <div id="chart" class="income"><IncomeChart/></div>
-  </div> 
     <div class="recentTrans">
-      <h1 class="pb-4">Recent transaction</h1>
-      <div class="trans flex justify-between pb-4">
-        <h1 class="block">D</h1>
-        <div>
-          <h1 class="tit">Monthly PayBack Usage</h1>
-          <p class="cat">Entertainment</p>
-        </div>
-        <div>
-          <h1 class="num">200000</h1>
-          <p class="cat">2024-02-03</p>
-        </div>
+      <div class="flex space-between pb-4">
+        <h1 class="flex-1">Recent transaction</h1>
+        <router-link to="/transaction"  class="flex-1">></router-link>
       </div>
-      <div class="trans flex justify-between pb-4">
-        <h1 class="block ">D</h1>
-        <div>
-          <h1 class="tit">Monthly PayBack Usage</h1>
-          <p class="cat">Entertainment</p>
+      <div v-for="(transaction, index) in recentTrans.slice(0, 3)" :key="index" class="trans flex space-between pb-4">
+        <h1 class="block">{{ transaction.transaction_name.charAt(0) }}</h1>
+        <div class="pl-2">
+          <h1 class="tit">{{ transaction.transaction_name }}</h1>
+          <p class="cat">{{ transaction.category }}</p>
         </div>
-        <div>
-          <h1 class="num">200000</h1>
-          <p class="cat">2024-02-03</p>
-        </div>
-      </div>
-      <div class="trans flex justify-between">
-        <h1 class="block">D</h1>
-        <div>
-          <h1 class="tit">Monthly PayBack Usage</h1>
-          <p class="cat">Entertainment</p>
-        </div>
-        <div>
-          <h1 class="num">200000</h1>
-          <p class="cat">2024-02-03</p>
+        <div class="pl-2">
+          <h1 class="num">{{ transaction.Amount }}</h1>
+          <p class="cat">{{ transaction.transaction_date }}</p>
         </div>
       </div>
     </div>
     <div id="chart" class="expense"><ExpenseChart/></div> 
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -56,10 +37,11 @@
   import ExpenseChart from './ExpenseChart.vue'
   import axios from 'axios';
 
+  const recentTrans = ref([])
   const userAccounts = ref([]);
   const todos = ref([
   ]);
-  const user_id = '657deedb53a90ee98e224654';
+  const user_id = '6593ccdf025b256e0ffe24e8';
   const fetchBankAccount = async () => {
     try {
       const response = await axios.get(`http://localhost:8080/api/v1/${user_id}`);
@@ -84,11 +66,21 @@
       console.error('Error fetching user bills:', error);
     }
   };
+  const fetchTrans = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/v1/transaction/${user_id}`);
+      recentTrans.value = response.data;
+      console.log('recentTrans', recentTrans)
+    } catch (error) {
+      console.error('Error fetching account information:', error);
+    }
+  };
 
 
   onMounted(() => {
     fetchBankAccount();
     fetchUserBills();
+    fetchTrans();
     });
 
   const totalSaving = computed(() => {
