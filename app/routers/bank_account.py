@@ -254,7 +254,7 @@ def get_all_account_data(user_id: str):
     return GetAllAccountName(list_account_name=result)
 
 @router.get(
-    "bank_account/{user_id}/{account_type}"
+    "/bank_account/{user_id}/{account_type}"
 )
 def get_all_account_type(
     user_id: str,

@@ -1,6 +1,7 @@
 
 
 <template>
+  
     <div>
       <div class="background"></div>
       <div class="welcome-text">
@@ -28,33 +29,66 @@
         name="password"
         type="password"
         v-model="passwordInput" />
+
+        <label for="key">Authentication Key</label>
+        <input  required
+        placeholder="Enter your key"
+        id="key"
+        name="key"
+        type="password"
+        v-model="keyInput" />
   
-        <button type="submit">Log In</button>
-        <div class="social">
+        <button class="justify-center" type="submit" style="text-align: center;">Log In</button>
+        <!-- <div class="social">
           <div class="go"><i class="fab fa-google"></i> Google</div>
           <div class="fb"><i class="fab fa-facebook"></i> Facebook</div>
-        </div>
+        </div> -->
   
         <p class="m-auto mt-3 text-center fst-italic">
           <router-link to="/register" class="text-decoration-none">
             Doesn't have an account? Sign up!
           </router-link>
         </p>
+
+        <div v-if="showModal" class="modal">
+        <div class="modal-content">
+          <span @click="closeModal" class="close">&times;</span>
+          <p>{{ responseMessage }}</p>
+        </div>
+      </div>
       </form>
       </div>
   </template>
   
   <script setup lang="ts">
+  
+ 
+
   import { ref } from 'vue';
   import axios from 'axios';
+  import { useRoute, useRouter } from 'vue-router';
+
+const router = useRouter();
+
+// modal
+const showModal = ref(false);
+const responseMessage = ref('');
+
+const closeModal = () => {
+  showModal.value = false;
+  responseMessage.value = '';
+};
+
+// input data decalred
   const usernameInput = ref('');
   const passwordInput = ref('');
-  
+  const keyInput = ref('');
+
+  // submit form function
   const submitForm = async () => {
     const username = usernameInput.value;
     const password = passwordInput.value;
-    const key = "8f270c659c4211eebf9404ea5623eaeb";
-    console.log(username, password, key);
+    const key = keyInput.value;
   
     const formData = new FormData();
 formData.append('user_name', username);
@@ -68,14 +102,24 @@ try {
     },
     withCredentials: true, // Include credentials in the request
   });
+  showModal.value = true;
+    responseMessage.value = 'Login successful';
+   localStorage.setItem('userId', response.data.user_id);
+   const userId=ref('');
+   userId.value = localStorage.getItem('userId') ?? '';
 
+    console.log(userId.value);
+  router.push({ name: 'Investment' });
   console.log('Login successful:', response.data);
+
 } catch (error) {
   if (error.response) {
     // The request was made and the server responded with a status code
     // that falls out of the range of 2xx
     console.error('Server responded with error status:', error.response.status);
     console.error('Response data:', error.response.data);
+    showModal.value = true;
+    responseMessage.value = error.response.data.message;
   } else if (error.request) {
     // The request was made but no response was received
     console.error('No response received from the server');
@@ -83,8 +127,12 @@ try {
     // Something happened in setting up the request that triggered an Error
     console.error('Error setting up the request:', error.message);
   }
+
+
+
 }
   };
+  
   </script>
   
   <style scoped>
@@ -106,7 +154,6 @@ try {
 
 }
 
-  
 
   
   .welcome-text {
@@ -228,5 +275,40 @@ try {
   a {
     color: #e5e5e5;
   }
+
+  /* Modal styles */
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
   </style>
   

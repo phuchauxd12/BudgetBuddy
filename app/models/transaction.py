@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field, validator
 from datetime import datetime
 from typing_extensions import Annotated
 from bson import ObjectId
+
 class Transaction(BaseModel):
     transaction_name : str = Field(alias="transaction_name", default=None)
     transaction_date : str = Field(...,alias="transaction_date")
@@ -32,6 +33,7 @@ class GetTransactionInformation(BaseModel):
     account_type: str = Field(alias="account_type", default=None)
     transaction_type: str = Field(alias="transaction_type", default=None)
     category: str = Field(alias="category", default=None)
+    
     class Config:
         allow_population_by_field_name = True
         arbitrary_types_allowed=True

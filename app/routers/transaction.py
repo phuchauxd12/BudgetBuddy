@@ -224,4 +224,3 @@ def delete_transaction(user_id: str, transaction_id: str):
         return JSONResponse(content={"message": "Transaction deleted successfully"})
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
-

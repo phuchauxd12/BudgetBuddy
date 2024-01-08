@@ -1,0 +1,15 @@
+{
+  "style": "default",
+  "typescript": true,
+  "tailwind": {
+    "config":"tailwind.config.ts",
+    "css": "src/renderer/tailwind.css",
+    "baseColor": "slate",
+    "cssVariables": true
+  },
+  "framework": "vite",
+  "aliases": {
+    "components": "src/@/components",
+    "utils": "src/@/lib/utils"
+  }
+}

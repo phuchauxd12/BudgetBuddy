@@ -2,13 +2,19 @@
 from pydantic import BaseModel
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from enum import Enum
+
 import os
 import certifi as certifi
+class StrEnum(str, Enum):
+    pass
+
 # Load environment variables from the local.env file
 load_dotenv(os.path.join(os.path.dirname(__file__), "local.env"))
 
-class Constant():
-    MONGODB_URI = os.environ["MONGODB_URI"]
+class Constant(StrEnum):
+    MONGODB_URI =  'mongodb+srv://phuchauxd12:Abcd0123@cluster0.lf8sh9p.mongodb.net/'
+
 
 
 class Message(BaseModel):

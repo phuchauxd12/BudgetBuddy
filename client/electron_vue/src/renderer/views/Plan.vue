@@ -1,4 +1,5 @@
 <template>
+  
     <AddIncome class="form" v-if="isVisible2" @close-modal="closeForm2"/>
     <AddSub class="form" v-if="isVisible3" @close-modal="closeForm3"/>
     <AddPlan class="form" v-if="isVisible4" @close-modal="closeForm4"/>
@@ -54,7 +55,7 @@
   import EditSub from '../components/EditSub.vue'
   import SpecificPlan from '../components/SpecificPlan.vue'
   import EditGoal from '../components/EditGoal.vue'
-
+  import Links from  '../components/Link.vue';
   const income = '$8,469.00';
   const plannedSpending = '$30.00';
   const savingGoals = '$500.00';
