@@ -37,7 +37,7 @@ console.log(response.data);
 
     // Map the backend data to the desired structure
     const mappedData = backendData.map((backendTransaction) => ({
-      id: backendTransaction._id,
+      id: backendTransaction.transaction_id,
       amount: backendTransaction.Amount,
       account: backendTransaction.account_name,
       transactionName: backendTransaction.transaction_name,
