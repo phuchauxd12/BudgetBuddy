@@ -26,6 +26,7 @@ Create email.env in models, which has email and email app password
 example:
 
    FROM_EMAIL=doannguyenphuchau@gmail.com
+   
    EMAIL_PASSWORD=ucee mmkg qwxy avyp
    
  
