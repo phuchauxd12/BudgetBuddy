@@ -18,7 +18,7 @@ We provide a desktop application that could:
 ### Step 1: Run Backend (run command from root folder)
 
  1: Create a `local.env` file 
-Create a `local.env` file with secret value like MongoDB URI, API key, etc. inclued create email.env in models, which has email and email app password
+File containa secret value like MongoDB URI, API key, etc. inclued create email.env in models, which has email and email app password
 example:
    FROM_EMAIL=doannguyenphuchau@gmail.com
    EMAIL_PASSWORD=ucee mmkg qwxy avyp
