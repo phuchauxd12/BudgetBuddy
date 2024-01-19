@@ -22,7 +22,9 @@ File containa secret value like MongoDB URI, API key, etc. inclued create email.
 example:
    FROM_EMAIL=doannguyenphuchau@gmail.com
    EMAIL_PASSWORD=ucee mmkg qwxy avyp
+   
  MONGODB_URI=mongodb+srv://phuchauxd12:Abcd0123@cluster0.lf8sh9p.mongodb.net/
+ 
  2: Install packages 
 ```pip install -r requirements-dev.txt```
 
