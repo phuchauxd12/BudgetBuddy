@@ -9,9 +9,10 @@ We provide a desktop application that could:
 - Stock and Investment News Real-time updated
 
 ## Folder Structure
+```
 \app: source code for the back-end
 \client: source code for the front-end
-
+```
 ## BudgetBuddy Deployment
 
 ### Step 1: Run Backend (run command from root folder)
