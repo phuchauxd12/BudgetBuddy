@@ -17,13 +17,13 @@ We provide a desktop application that could:
 
 ### Step 1: Run Backend (run command from root folder)
 
- 1: Create a `local.env` file in app,
+ 1: Create a `local.env` file in root/app,
 File containa secret value like MongoDB URI:
 
 ```
 MONGODB_URI=mongodb+srv://phuchauxd12:Abcd0123@cluster0.lf8sh9p.mongodb.net/
 ```
-Create `email.env` in models, which has email and email app password
+Create `email.env` in root/app/models, which has email and email app password
 example:
 
 ```
