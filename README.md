@@ -9,7 +9,47 @@ We provide a desktop application that could:
 - Stock and Investment News Real-time updated
 
 ## Folder Structure
-```
 \app: source code for the back-end
 \client: source code for the front-end
-```
+
+## BudgetBuddy Deployment
+
+### Step 1: Run Backend (run command from root folder)
+
+ 1: Create a `local.env` file ```
+Create a `local.env` file with secret value like MongoDB URI, API key, etc. inclued create email.env in models, which has email and email app password
+example:
+   FROM_EMAIL=doannguyenphuchau@gmail.com
+   EMAIL_PASSWORD=ucee mmkg qwxy avyp
+
+``` 2: Install packages 
+pip install -r requirements-dev.txt
+
+ 3: Deploy backend ```
+python app/main.py or python3 app/main
+
+``` 4: Back end running on port 8080 
+Go to 'http://localhost:8080/api/v1/docs' to see APIs
+
+
+### Step 2: Run Frontend (run command from root folder)
+
+ 1: Go to Client Folder ```
+cd client
+
+``` 2: Go to electron_vue Folder 
+cd electron_vue
+
+ 3: Install dependencies ```
+npm i
+
+``` 4: Run the environment 
+npm run dev
+
+
+#### Note
+- Make sure you have installed nodejs version 18. or higher, python/python3 and pip.
+- If you encounter problem related vue version when deploy frontend, run “npm vue update”
+
+  
+### Step 3: App is ready and running on Electron application or visit localhost:8081/
