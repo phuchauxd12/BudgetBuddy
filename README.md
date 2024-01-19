@@ -20,16 +20,18 @@ We provide a desktop application that could:
  1: Create a `local.env` file in app,
 File containa secret value like MongoDB URI:
 
+```
 MONGODB_URI=mongodb+srv://phuchauxd12:Abcd0123@cluster0.lf8sh9p.mongodb.net/
-
-Create email.env in models, which has email and email app password
+```
+Create `email.env` in models, which has email and email app password
 example:
 
+```
    FROM_EMAIL=doannguyenphuchau@gmail.com
    
    EMAIL_PASSWORD=ucee mmkg qwxy avyp
    
- 
+ ```
  
  2: Install packages 
 ```pip install -r requirements-dev.txt```
