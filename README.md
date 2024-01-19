@@ -18,12 +18,16 @@ We provide a desktop application that could:
 ### Step 1: Run Backend (run command from root folder)
 
  1: Create a `local.env` file 
-File containa secret value like MongoDB URI, API key, etc. inclued create email.env in models, which has email and email app password
+File containa secret value like MongoDB URI:
+
+MONGODB_URI=mongodb+srv://phuchauxd12:Abcd0123@cluster0.lf8sh9p.mongodb.net/
+
+Create email.env in models, which has email and email app password
 example:
    FROM_EMAIL=doannguyenphuchau@gmail.com
    EMAIL_PASSWORD=ucee mmkg qwxy avyp
    
- MONGODB_URI=mongodb+srv://phuchauxd12:Abcd0123@cluster0.lf8sh9p.mongodb.net/
+ 
  
  2: Install packages 
 ```pip install -r requirements-dev.txt```
